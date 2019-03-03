@@ -9,7 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import SaveIcon from '@material-ui/icons/Save';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import RemoveIcon from '@material-ui/icons/Delete';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import WarningIcon from '@material-ui/icons/Warning';
 import Card from '@material-ui/core/Card';
@@ -22,6 +22,12 @@ import Grid from '@material-ui/core/Grid';
 import GridTile from '@material-ui/core/GridListTile';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Divider from '@material-ui/core/Divider';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ThreadItem from '../ui/ThreadItem';
 
 
 @inject('app')
@@ -40,7 +46,7 @@ export default class MainPage extends React.Component {
     return <div>
       <GridList
         cols={1}
-        cellHeight={400}
+        cellHeight={300}
         spacing={2}
         style={{
           overflowY: 'auto',
@@ -49,38 +55,15 @@ export default class MainPage extends React.Component {
         }}
       >
         {
-          this.props.app.threads.map((t, i) => <GridTile
-            key={i}
-            subtitle={<span>от <b>Анонима</b></span>}
-            actionIcon={<IconButton><ShareIcon color="white" /></IconButton>}
-          >
-            <Paper className={'thread'} style={{height: 300, overflowY: 'auto'}}>
-              <Grid container wrap={'nowrap'} direction={'column'}>
-                <Grid item xs={12} style={{ padding: 24 }}>
-                  <Typography variant={'title'} dangerouslySetInnerHTML={{ __html: t.subject }} />
-                </Grid>
-                <Grid item xs={12} style={{ padding: 24 }}>
-                  <Typography style={{ maxHeight: 200 }} dangerouslySetInnerHTML={{ __html: t.comment }} />
-                </Grid>
-              </Grid>
-            </Paper>
-            <Paper>
-              <Grid item xs={12}>
-                <IconButton aria-label="Save">
-                  <SaveIcon disabled />
-                </IconButton>
-                {
-                  t.touched_by_mod ? <Button variant={'flat'} color={'secondary'}>Удаленные посты</Button> : null
-                }
-              </Grid>
-            </Paper>
-          </GridTile>)
+          this.props.app.currentThreads.length ?
+            this.props.app.currentThreads.map((t, i) => <ThreadItem thread={t} key={i} />)
+            : <Paper style={{ height: 120, padding: 24 }}><Typography variant={'title'} align={'center'}>Нет тредов</Typography></Paper>
         }
       </GridList>
-      <BottomNavigation value={'all'} onChange={e => console.log(`Change`, e)} style={{ width: '100%' }}>
-        <BottomNavigationAction label="Все треды" value="all" icon={<SaveIcon />} />
-        <BottomNavigationAction label="Избранное" value="favorites" disabled icon={<FavoriteIcon />} />
-        <BottomNavigationAction label="Удаленные" value="deleted" disabled icon={<ShareIcon />} />
+      <BottomNavigation value={this.props.app.tab} style={{ width: '100%' }}>
+        <BottomNavigationAction label="Все треды" value="all" onClick={() => this.props.app.tab = 'all'} icon={<SaveIcon />} />
+        <BottomNavigationAction label="Избранное" value="favorites" onClick={() => this.props.app.tab = 'favorites'} disabled icon={<FavoriteIcon />} />
+        <BottomNavigationAction label="Удаленные" value="deleted" onClick={() => this.props.app.tab = 'deleted'} icon={<RemoveIcon />} />
       </BottomNavigation>
     </div>
   }
