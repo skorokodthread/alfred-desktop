@@ -17,11 +17,14 @@ class AppStore {
 
   @observable favoriteThreads = []
 
+  @observable showOnlyModDeleted = false
+
   @observable URL = process.env.NODE_ENV === 'production' ? 'https://someapi.com' : 'http://localhost:4000'
 
   @observable loading = false
 
-  getThreads = async () => {
+  @action.bound
+  async getThreads() {
     this.loading = true
     try {
       const res = await axios.get(`${this.URL}/api/2ch/threads?page=${this.page}`)
@@ -38,9 +41,15 @@ class AppStore {
   get currentThreads() {
     switch (this.tab) {
       case 'favorites': return this.favoriteThreads;
-      case 'deleted': return this.deletedThreads
+      case 'deleted':
+        return this.showOnlyModDeleted ? this.deletedThreads.filter(t => t.thread_deleted) : this.deletedThreads
       default: return this.threads
     }
+  }
+
+  @computed
+  get allThreads() {
+    return [...this.threads, ...this.deletedThreads, ...this.favoriteThreads]
   }
 }
 

@@ -38,9 +38,10 @@ if (
 }
 
 const installExtensions = async () => {
+  console.log(`Installing extensions`)
   const installer = require('electron-devtools-installer');
   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-  const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
+  const extensions = ['REACT_DEVELOPER_TOOLS'];
 
   return Promise.all(
     extensions.map(name => installer.default(installer[name], forceDownload))
@@ -50,7 +51,6 @@ const installExtensions = async () => {
 /**
  * Add event listeners...
  */
-
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
@@ -60,6 +60,8 @@ app.on('window-all-closed', () => {
 });
 
 app.on('ready', async () => {
+  app.commandLine.appendSwitch('auto-detect', 'false')
+  app.commandLine.appendSwitch('no-proxy-server')
   if (
     process.env.NODE_ENV === 'development' ||
     process.env.DEBUG_PROD === 'true'

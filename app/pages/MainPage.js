@@ -21,27 +21,32 @@ import GridList from '@material-ui/core/GridList';
 import Paper from '@material-ui/core/Paper';
 import ThreadItem from '../ui/ThreadItem';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Button from '@material-ui/core/Button';
 
-
+export default
 @inject('app')
 @observer
-export default class MainPage extends React.Component {
-
-  state = {
-    expanded: false,
-  }
+class MainPage extends React.Component {
 
   async componentDidMount() {
     await this.props.app.getThreads()
   }
 
   render() {
-    const { tab, loading } = this.props.app
+    const { tab, loading, currentThreads, showOnlyModDeleted, allThreads } = this.props.app
     return <div style={{ position: 'relative' }}>
       { loading ?
-        <LinearProgress color="secondary" /> :
+        <LinearProgress color="secondary" style={{ marginBottom: 10 }} /> :
         <IconButton onClick={this.props.app.getThreads}><UpdateIcon/></IconButton>
         }
+      {
+        tab === 'deleted' && <Button variant={'contained'} color={'secondary'} onClick={() => this.props.app.showOnlyModDeleted = !this.props.app.showOnlyModDeleted}>
+          Показать {showOnlyModDeleted ? 'все удаленные' : 'только удаленные мочой'}
+        </Button>
+      }
+      {
+        allThreads.length ? <Button style={{ marginLeft: 10 }} variant={'contained'} color={'primary'} disabled>Поиск</Button> : null
+      }
       <GridList
         cols={1}
         cellHeight={300}
@@ -53,8 +58,8 @@ export default class MainPage extends React.Component {
         }}
       >
         {
-          this.props.app.currentThreads.length ?
-            this.props.app.currentThreads.map((t, i) => <ThreadItem showDeleted={tab === 'deleted'} showDeletedPostsButton={tab === 'all'} thread={t} key={i} />)
+          currentThreads.length ?
+            currentThreads.map((t, i) => <ThreadItem showDeleted={tab === 'deleted'} showDeletedPostsButton={tab === 'all'} thread={t} key={i} />)
             : <Paper style={{ height: 120, padding: 24 }}><Typography variant={'title'} align={'center'}>Нет тредов</Typography></Paper>
         }
       </GridList>

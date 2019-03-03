@@ -6,25 +6,23 @@ import './app.global.css';
 import './fonts/index.css';
 import createStores from './stores'
 import MainPage from './pages/MainPage'
-import { BrowserRouter as Router, Route, Link, Redirect, Switch } from "react-router-dom";
-import installExtension, { REDUX_DEVTOOLS } from 'electron-devtools-installer';
+import ThreadPage from './pages/ThreadPage'
+import { HashRouter as Router, Route, Link, Redirect, Switch } from "react-router-dom";
 const stores = createStores()
 
 render(
   <AppContainer>
     <Provider {...stores}>
       <Router>
-        <MainPage />
+        <Switch>
+          <Route exact path="/" component={MainPage} />
+          <Route exact path="/:id" component={ThreadPage} />
+        </Switch>
       </Router>
     </Provider>
   </AppContainer>,
   document.getElementById('root')
 )
-
-
-installExtension(REDUX_DEVTOOLS)
-  .then((name) => console.log(`Added Extension:  ${name}`))
-  .catch((err) => console.log('An error occurred: ', err));
 //
 // if (module.hot) {
 //   module.hot.accept('./pages/MainPage', () => {

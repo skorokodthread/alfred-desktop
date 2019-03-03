@@ -11,6 +11,7 @@ import Paper from '@material-ui/core/Paper';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { Link } from 'react-router-dom'
 
 const ThreadItem = props => {
   const t = props.thread
@@ -57,6 +58,9 @@ const ThreadItem = props => {
           }
           {
             props.showDeleted && t.thread_ended ? <Button variant="contained" disabled color="primary">Смыт бамплимитом</Button> : null
+          }
+          {
+            t.posts ? <Button variant="contained" component={Link} to={`/${t.thread_id}`} style={{ marginLeft: 10 }}>Перейти в тред</Button> : null
           }
         </Grid>
       </Paper>
