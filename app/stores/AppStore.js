@@ -22,10 +22,16 @@ class AppStore {
   @observable loading = false
 
   getThreads = async () => {
-    const res = await axios.get(`${this.URL}/api/2ch/threads?page=${this.page}`)
-    console.log(`Res`, res.data)
-    this.threads = res.data.threads
-    this.deletedThreads = res.data.deleted_threads
+    this.loading = true
+    try {
+      const res = await axios.get(`${this.URL}/api/2ch/threads?page=${this.page}`)
+      console.log(`Res`, res.data)
+      this.threads = res.data.threads
+      this.deletedThreads = res.data.deleted_threads
+      this.loading = false
+    } catch (e) {
+      this.loading = false
+    }
   }
 
   @computed

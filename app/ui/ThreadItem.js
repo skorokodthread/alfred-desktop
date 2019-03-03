@@ -47,7 +47,16 @@ const ThreadItem = props => {
             <FavoriteIcon disabled />
           </IconButton>
           {
-            t.touched_by_mod ? <Button variant="flat" color="secondary">Удаленные посты</Button> : null
+            t.posts ? <IconButton disabled><Typography component="p">Постов: {t.posts.length}</Typography></IconButton> : null
+          }
+          {
+            props.showDeletedPostsButton && t.touched_by_mod ? <Button variant="flat" color="secondary">Удаленные посты</Button> : null
+          }
+          {
+            props.showDeleted && t.thread_deleted ? <Button variant="contained" disabled color="primary">Удалено мочой</Button> : null
+          }
+          {
+            props.showDeleted && t.thread_ended ? <Button variant="contained" disabled color="primary">Смыт бамплимитом</Button> : null
           }
         </Grid>
       </Paper>

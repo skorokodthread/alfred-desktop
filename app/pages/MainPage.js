@@ -15,19 +15,12 @@ import WarningIcon from '@material-ui/icons/Warning';
 import Card from '@material-ui/core/Card';
 import Collapse from '@material-ui/core/Collapse';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
-import Icon from '@material-ui/core/Icon';
+import UpdateIcon from '@material-ui/icons/Update';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import GridList from '@material-ui/core/GridList';
-import Grid from '@material-ui/core/Grid';
-import GridTile from '@material-ui/core/GridListTile';
-import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import Divider from '@material-ui/core/Divider';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ThreadItem from '../ui/ThreadItem';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 
 @inject('app')
@@ -43,28 +36,35 @@ export default class MainPage extends React.Component {
   }
 
   render() {
-    return <div>
+    const { tab, loading } = this.props.app
+    return <div style={{ position: 'relative' }}>
+      { loading ?
+        <LinearProgress color="secondary" /> :
+        <IconButton onClick={this.props.app.getThreads}><UpdateIcon/></IconButton>
+        }
       <GridList
         cols={1}
         cellHeight={300}
         spacing={2}
         style={{
           overflowY: 'auto',
-          height: '90vh',
+          height: '80vh',
           marginBottom: 10
         }}
       >
         {
           this.props.app.currentThreads.length ?
-            this.props.app.currentThreads.map((t, i) => <ThreadItem thread={t} key={i} />)
+            this.props.app.currentThreads.map((t, i) => <ThreadItem showDeleted={tab === 'deleted'} showDeletedPostsButton={tab === 'all'} thread={t} key={i} />)
             : <Paper style={{ height: 120, padding: 24 }}><Typography variant={'title'} align={'center'}>Нет тредов</Typography></Paper>
         }
       </GridList>
-      <BottomNavigation value={this.props.app.tab} style={{ width: '100%' }}>
-        <BottomNavigationAction label="Все треды" value="all" onClick={() => this.props.app.tab = 'all'} icon={<SaveIcon />} />
-        <BottomNavigationAction label="Избранное" value="favorites" onClick={() => this.props.app.tab = 'favorites'} disabled icon={<FavoriteIcon />} />
-        <BottomNavigationAction label="Удаленные" value="deleted" onClick={() => this.props.app.tab = 'deleted'} icon={<RemoveIcon />} />
-      </BottomNavigation>
+      <div style={{ position: 'absolute', bottom: -80, left: 0, right: 0 }}>
+        <BottomNavigation value={tab} style={{ width: '100%' }}>
+          <BottomNavigationAction label="Все треды" value="all" onClick={() => this.props.app.tab = 'all'} icon={<SaveIcon />} />
+          <BottomNavigationAction label="Избранное" value="favorites" onClick={() => this.props.app.tab = 'favorites'} disabled icon={<FavoriteIcon />} />
+          <BottomNavigationAction label="Удаленные" value="deleted" onClick={() => this.props.app.tab = 'deleted'} icon={<RemoveIcon />} />
+        </BottomNavigation>
+      </div>
     </div>
   }
 }
